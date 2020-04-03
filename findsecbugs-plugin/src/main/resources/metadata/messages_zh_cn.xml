@@ -51,7 +51,7 @@ String generateSecretToken() {
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://jazzy.id.au/2010/09/20/cracking_random_number_generators_part_1.html">Cracking Random Number Generators - Part 1 (https://jazzy.id.au)</a><br/>
 <a href="https://www.securecoding.cert.org/confluence/display/java/MSC02-J.+Generate+strong+random+numbers">CERT: MSC02-J. Generate strong random numbers</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/330.html">CWE-330: Use of Insufficiently Random Values</a><br/>
@@ -60,24 +60,24 @@ String generateSecretToken() {
 ]]>
         </Details>
     </BugPattern>
-    <BugCode abbrev="SECPR">Predictable Pseudo Random Generator</BugCode>
+    <BugCode abbrev="SECPR">可预测的伪随机发生器</BugCode>
 
     <BugPattern type="PREDICTABLE_RANDOM_SCALA">
-        <ShortDescription>Predictable pseudorandom number generator (Scala)</ShortDescription>
-        <LongDescription>This Scala random generator ({3}) is predictable</LongDescription>
+        <ShortDescription>可预测的伪随机数生成器（Scala）</ShortDescription>
+        <LongDescription>此Scala随机生成器（{3}）是可预测的</LongDescription>
         <Details>
             <![CDATA[
-<p>The use of a predictable random value can lead to vulnerabilities when used in certain security critical contexts. For example, when the value is used as:</p>
+<p>当在某些安全关键环境中使用可预测的随机值时，可能会导致漏洞。例如，当该值用作：</p>
 <ul>
-<li>a CSRF token: a predictable token can lead to a CSRF attack as an attacker will know the value of the token</li>
-<li>a password reset token (sent by email): a predictable password token can lead to an account takeover, since an attacker will guess the URL of the "change password" form</li>
-<li>any other secret value</li>
+<li>CSRF令牌：可预测的令牌可能导致CSRF攻击，因为攻击者将知道令牌的值</li>
+<li>密码重置令牌（通过电子邮件发送）：可预测的密码令牌可能导致帐户被接管，因为攻击者将猜测“更改密码”表单的URL</li>
+<li>任何其他秘密值</li>
 </ul>
 <p>
-A quick fix could be to replace the use of <code>java.util.Random</code> with something stronger, such as <b>java.security.SecureRandom</b>.
+一个快速的解决方法是将<code> java.util.Random </ code>的使用替换为更强的功能，例如<b> java.security.SecureRandom </ b>.
 </p>
 <p>
-<b>Vulnerable Code:</b><br/>
+<b>脆弱代码：</b><br/>
 <pre>import scala.util.Random
 
 def generateSecretToken() {
@@ -86,7 +86,7 @@ def generateSecretToken() {
 }</pre>
 </p>
 <p>
-    <b>Solution:</b>
+    <b>解决方法：</b>
 <pre>import java.security.SecureRandom
 
 def generateSecretToken() {
@@ -96,20 +96,9 @@ def generateSecretToken() {
     return value.map("%02x" format _).mkString
 }</pre>
 </p>
-<!--<p>
-<b>Solution:</b>
-<pre>import java.security.SecureRandom
-import scala.util.Random._
-
-def generateSecretToken() {
-    val secRandom = javaRandomToRandom(new SecureRandom())
-    val result = Seq.fill(16)(secRandom.nextInt)
-    return result.map("%02x" format _).mkString
-}</pre>
-</p>-->
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://jazzy.id.au/2010/09/20/cracking_random_number_generators_part_1.html">Cracking Random Number Generators - Part 1 (http://jazzy.id.au)</a><br/>
 <a href="https://www.securecoding.cert.org/confluence/display/java/MSC02-J.+Generate+strong+random+numbers">CERT: MSC02-J. Generate strong random numbers</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/330.html">CWE-330: Use of Insufficiently Random Values</a><br/>
@@ -118,7 +107,7 @@ def generateSecretToken() {
 ]]>
         </Details>
     </BugPattern>
-    <BugCode abbrev="SECPRS">Predictable Pseudo Random Generator (Scala)</BugCode>
+    <BugCode abbrev="SECPRS">可预测的伪随机生成器（Scala）</BugCode>
 
     <!-- Servlet parameter -->
     <Detector class="com.h3xstream.findsecbugs.endpoint.ServletEndpointDetector">
@@ -127,90 +116,90 @@ def generateSecretToken() {
     </Detector>
 
     <BugPattern type="SERVLET_PARAMETER">
-        <ShortDescription>Untrusted servlet parameter</ShortDescription>
-        <LongDescription>The method {3} returns a String value that is controlled by the client</LongDescription>
+        <ShortDescription>不受信任的servlet参数</ShortDescription>
+        <LongDescription>方法{3}返回由客户端控制的字符串值</LongDescription>
         <Details>
             <![CDATA[
-<p>The Servlet can read GET and POST parameters from various methods. The value obtained should be considered unsafe.
-You may need to validate or sanitize those values before passing them to sensitive APIs such as:</p>
+<p>Servlet可以从各种方法读取GET和POST参数。 获得的值应该被认为是不安全的。
+您可能需要先验证或清除这些值，然后再将其传递给敏感的API，例如：</p>
 <ul>
-<li>SQL query (May leads to SQL injection)</li>
-<li>File opening (May leads to path traversal)</li>
-<li>Command execution (Potential Command injection)</li>
-<li>HTML construction (Potential XSS)</li>
-<li>etc...</li>
+<li>SQL查询（可能导致SQL注入）</li>
+<li>文件打开（可能导致遍历路径）</li>
+<li>命令执行（潜在的命令注入）</li>
+<li>HTML构造（潜在的XSS）</li>
+<li>等等...</li>
 </ul>
 
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20: Improper Input Validation</a>
 </p>
 ]]>
         </Details>
     </BugPattern>
-    <BugCode abbrev="SECSP">Servlet Parameter</BugCode>
+    <BugCode abbrev="SECSP">Servlet参数</BugCode>
 
 
     <BugPattern type="SERVLET_CONTENT_TYPE">
-        <ShortDescription>Untrusted Content-Type header</ShortDescription>
-        <LongDescription>The HTTP header Content-Type can be controlled by the client</LongDescription>
+        <ShortDescription>不受信任的Content-Type标头</ShortDescription>
+        <LongDescription>HTTP标头Content-Type可以由客户端控制</LongDescription>
         <Details>
             <![CDATA[
 <p>
-The HTTP header Content-Type can be controlled by the client. As such, its value should not be used in any security critical decisions.
+HTTP标头Content-Type可以由客户端控制。 因此，其值不应在任何对安全性至关重要的决策中使用。
 </p>
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/807.html">CWE-807: Untrusted Inputs in a Security Decision</a>
 </p>
 ]]>
         </Details>
     </BugPattern>
-    <BugCode abbrev="SECSCT">Content-Type Header</BugCode>
+    <BugCode abbrev="SECSCT">HTTP标头Content-Type</BugCode>
 
 
     <BugPattern type="SERVLET_SERVER_NAME">
-        <ShortDescription>Untrusted Hostname header</ShortDescription>
-        <LongDescription>The hostname received can often be controlled by the client</LongDescription>
+        <ShortDescription>不受信任的主机名标头</ShortDescription>
+        <LongDescription>收到的主机名通常可以由客户端控制</LongDescription>
         <Details>
             <![CDATA[
-<p>The hostname header can be controlled by the client. As such, its value should not be used in any security critical decisions.
-Both <code>ServletRequest.getServerName()</code> and <code>HttpServletRequest.getHeader("Host")</code> have the same
-behavior which is to extract the <code>Host</code> header.</p>
+<p>主机名头可以由客户端控制。 因此，其值不应在任何对安全性至关重要的决策中使用。
+<code> ServletRequest.getServerName（）</ code>和<code> HttpServletRequest.getHeader（“ Host”）</ code>具有相同的
+提取<code> Host </ code>标头的行为。</p>
 <pre>
 GET /testpage HTTP/1.1
 Host: www.example.com
 [...]</pre>
 <p>
-The web container serving your application may redirect requests to your application by default. This would allow
-a malicious user to place any value in the Host header. It is recommended that you do not trust this value in any security
-decisions you make with respect to a request.
+默认情况下，为您的应用程序提供服务的Web容器可能会将请求重定向到您的应用程序。 这将允许
+恶意用户在Host标头中放置任何值。 建议您不要在任何安全性中信任此值
+您针对请求做出的决定。
 </p>
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/807.html">CWE-807: Untrusted Inputs in a Security Decision</a>
 </p>
 ]]>
         </Details>
     </BugPattern>
-    <BugCode abbrev="SECSSN">Hostname Header</BugCode>
+    <BugCode abbrev="SECSSN">HTTP标头Hostname</BugCode>
 
 
     <BugPattern type="SERVLET_SESSION_ID">
-        <ShortDescription>Untrusted session cookie value</ShortDescription>
-        <LongDescription>Direct access to Session ID should be avoided</LongDescription>
+        <ShortDescription>不受信任的会话Cookie值</ShortDescription>
+        <LongDescription>应避免直接访问会话ID</LongDescription>
         <Details>
             <![CDATA[
 <p>
-The method <a href="http://docs.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequest.html#getRequestedSessionId()"><code>HttpServletRequest.getRequestedSessionId()</code></a>
-typically returns the value of the cookie <code>JSESSIONID</code>. This value is normally only accessed by the session management logic and not normal developer code.
+方法<a href="http://docs.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequest.html#getRequestedSessionId()"> <code> HttpServletRequest.getRequestedSessionId（）</ code> </a>
+通常返回cookie <code> JSESSIONID </ code>的值。 该值通常仅由会话管理逻辑访问，而不能由常规开发人员代码访问。
 </p>
 <p>
-The value passed to the client is generally an alphanumeric value (e.g., <code>JSESSIONID=jp6q31lq2myn</code>). However, the value can be altered by the client.
-The following HTTP request illustrates the potential modification.
+传递给客户端的值通常是字母数字值（例如<code> JSESSIONID = jp6q31lq2myn </ code>）。 但是，客户端可以更改该值。
+以下HTTP请求说明了可能的修改。
 <pre>
 GET /somePage HTTP/1.1
 Host: yourwebsite.com
@@ -218,13 +207,13 @@ User-Agent: Mozilla/5.0
 Cookie: JSESSIONID=Any value of the user&#39;s choice!!??'''&quot;&gt;
 </pre>
 </p>
-<p>As such, the JSESSIONID should only be used to see if its value matches an existing session ID. If it does not, the user should be
-considered an unauthenticated user. In addition, the session ID value should never be logged. If it is, then the log file could contain
-valid active session IDs, allowing an insider to hijack any sessions whose IDs have been logged and are still active.
+<p>因此，JSESSIONID仅应用于查看其值是否与现有会话ID相匹配。 如果不是，则用户应
+被视为未经身份验证的用户。 此外，会话ID值永远不应记录。 如果是这样，则日志文件可能包含
+有效的活动会话ID，允许内部人员劫持其ID已记录但仍处于活动状态的任何会话。
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/Session_Management_Cheat_Sheet">OWASP: Session Management Cheat Sheet</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20: Improper Input Validation</a>
 
@@ -232,79 +221,78 @@ valid active session IDs, allowing an insider to hijack any sessions whose IDs h
 ]]>
         </Details>
     </BugPattern>
-    <BugCode abbrev="SECSSID">Session Cookie Value</BugCode>
+    <BugCode abbrev="SECSSID">会话Cookie值</BugCode>
 
 
     <BugPattern type="SERVLET_QUERY_STRING">
-        <ShortDescription>Untrusted query string</ShortDescription>
-        <LongDescription>The query string can be any value</LongDescription>
+        <ShortDescription>不可信的查询字符串</ShortDescription>
+        <LongDescription>查询字符串可以是任何值</LongDescription>
         <Details>
             <![CDATA[
-<p>The query string is the concatenation of the GET parameter names and values. Parameters other than those intended can
-be passed in.</p>
-<p>For the URL request <code>/app/servlet.htm?a=1&b=2</code>, the query string extract will be <code>a=1&b=2</code></p>
-<p>Just as is true for individual parameter values retrieved via methods like <code>HttpServletRequest.getParameter()</code>,
-the value obtained from <code>HttpServletRequest.getQueryString()</code> should be considered unsafe.
-You may need to validate or sanitize anything pulled from the query string before passing it to sensitive APIs.
+<p>查询字符串是GET参数名称和值的串联。 可以传入非预期参数。</p>
+<p>对于URL请求<code> /app/servlet.htm?a=1&b=2 </ code>，查询字符串提取为<code> a = 1＆b = 2 </ code></p>
+<p>正如通过<code> HttpServletRequest.getParameter（）</ code>这样的方法检索的单个参数值一样，
+从<code> HttpServletRequest.getQueryString（）</ code>获得的值应视为不安全。
+您可能需要先验证或清除从查询字符串中提取的任何内容，然后再将其传递给敏感的API。
 </p>
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20: Improper Input Validation</a>
 </p>
 ]]>
         </Details>
     </BugPattern>
-    <BugCode abbrev="SECSSQ">Query String</BugCode>
+    <BugCode abbrev="SECSSQ">请求参数</BugCode>
 
 
     <BugPattern type="SERVLET_HEADER">
-        <ShortDescription>HTTP headers untrusted</ShortDescription>
-        <LongDescription>Request header can easily be altered by the client</LongDescription>
+        <ShortDescription>HTTP标头不受信任</ShortDescription>
+        <LongDescription>客户端可以轻松更改请求标头</LongDescription>
         <Details>
             <![CDATA[
-<p>Request headers can easily be altered by the requesting user. In general, no assumption should be made that
-the request came from a regular browser without modification by an attacker. As such, it is recommended that you
-not trust this value in any security decisions you make with respect to a request.</p>
+<p>请求标头可以由发出请求的用户轻松更改。 一般而言，不应假设
+该请求来自常规浏览器，未经攻击者修改。 因此，建议您
+不要在您针对请求做出的任何安全决策中信任此值。</p>
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/807.html">CWE-807: Untrusted Inputs in a Security Decision</a>
 </p>
 ]]>
         </Details>
     </BugPattern>
-    <BugCode abbrev="SECSH">HTTP Headers Untrusted</BugCode>
+    <BugCode abbrev="SECSH">HTTP标头不受信任</BugCode>
 
 
     <BugPattern type="SERVLET_HEADER_REFERER">
-        <ShortDescription>Untrusted Referer header</ShortDescription>
-        <LongDescription>The header "Referer" can easily be spoofed by the client</LongDescription>
+        <ShortDescription>不受信任的引荐标头</ShortDescription>
+        <LongDescription>标题“ Referer”很容易被客户端欺骗</LongDescription>
         <Details>
             <![CDATA[
 <p>
-Behavior:
+行为：
 <ul>
-<li>Any value can be assigned to this header if the request is coming from a malicious user.</li>
-<li>The "Referer" will not be present if the request was initiated from another origin that is secure (HTTPS).</li>
+<li>如果请求来自恶意用户，则可以将任何值分配给此标头。</li>
+<li>如果请求是从另一个安全的来源（HTTPS）发起的，则“ Referer”将不存在。</li>
 </ul>
 </p>
 <p>
-Recommendations:
+建议：
 <ul>
-<li>No access control should be based on the value of this header.</li>
-<li>No CSRF protection should be based only on this value (<a href="https://www.w3.org/Protocols/HTTP/HTRQ_Headers.html#z14">because it is optional</a>).</li>
+<li>任何访问控制都不应基于此标头的值。</li>
+<li>任何CSRF保护都不应仅基于此值（<a href="https://www.w3.org/Protocols/HTTP/HTRQ_Headers.html#z14">因为它是可选的</a>）。</li>
 </ul>
 </p>
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/807.html">CWE-807: Untrusted Inputs in a Security Decision</a>
 </p>
 ]]>
         </Details>
     </BugPattern>
-    <BugCode abbrev="SECSHR">Referer Header</BugCode>
+    <BugCode abbrev="SECSHR">HTTP标头Referer</BugCode>
 
 
     <BugPattern type="SERVLET_HEADER_USER_AGENT">
@@ -316,7 +304,7 @@ Recommendations:
 crawler UA) is not recommended.</p>
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/807.html">CWE-807: Untrusted Inputs in a Security Decision</a>
 </p>
 ]]>
@@ -340,7 +328,7 @@ and referenced by the user's session cookie. See HttpSession (<code>HttpServletR
 <p>Custom cookies can be used for information that needs to live longer than and is independent of a specific session.</p>
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/315.html">CWE-315: Cleartext Storage of Sensitive Information in a Cookie</a>
 </p>
 ]]>
@@ -401,7 +389,7 @@ public Response getImage(@javax.ws.rs.PathParam("image") String image) {
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246952/Path%20Traversal">WASC: Path Traversal</a><br/>
 <a href="https://www.owasp.org/index.php/Path_Traversal">OWASP: Path Traversal</a><br/>
 <a href="https://capec.mitre.org/data/definitions/126.html">CAPEC-126: Path Traversal</a><br/>
@@ -424,7 +412,7 @@ If an unfiltered parameter is passed to this file API, files at an arbitrary fil
 by the user. If that is the case, the reported instance is a false positive.</p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246952/Path%20Traversal">WASC-33: Path Traversal</a><br/>
 <a href="https://www.owasp.org/index.php/Path_Traversal">OWASP: Path Traversal</a><br/>
 <a href="https://capec.mitre.org/data/definitions/126.html">CAPEC-126: Path Traversal</a><br/>
@@ -477,7 +465,7 @@ def getWordList(value:String) = Action {
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246952/Path%20Traversal">WASC: Path Traversal</a><br/>
 <a href="https://www.owasp.org/index.php/Path_Traversal">OWASP: Path Traversal</a><br/>
 <a href="https://capec.mitre.org/data/definitions/126.html">CAPEC-126: Path Traversal</a><br/>
@@ -508,7 +496,7 @@ Runtime r = Runtime.getRuntime();
 r.exec("/bin/sh -c some_tool" + input);</pre>
 </p>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/Command_Injection">OWASP: Command Injection</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A1-Injection">OWASP: Top 10 2013-A1-Injection</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/78.html">CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')</a>
@@ -534,7 +522,7 @@ r.exec("/bin/sh -c some_tool" + input);</pre>
 }</pre>
 </p>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/Command_Injection">OWASP: Command Injection</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A1-Injection">OWASP: Top 10 2013-A1-Injection</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/78.html">CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')</a>
@@ -569,7 +557,7 @@ that looks at the end of the filename (e.g., ends with <code>".log"</code>) to m
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246949/Null%20Byte%20Injection">WASC-28: Null Byte Injection</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/158.html">CWE-158: Improper Neutralization of Null Byte or NUL Character</a>
 </p>
@@ -641,7 +629,7 @@ sc.init(kmf.getKeyManagers(), tmf.getTrustManagers(),null);
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246945/Insufficient%20Transport%20Layer%20Protection">WASC-04: Insufficient Transport Layer Protection</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/295.html">CWE-295: Improper Certificate Validation</a>
 </p>
@@ -691,7 +679,7 @@ sc.init(kmf.getKeyManagers(), tmf.getTrustManagers(),null);
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246945/Insufficient%20Transport%20Layer%20Protection">WASC-04: Insufficient Transport Layer Protection</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/295.html">CWE-295: Improper Certificate Validation</a>
 </p>
@@ -724,7 +712,7 @@ sc.init(kmf.getKeyManagers(), tmf.getTrustManagers(),null);
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/Web_Service_Security_Cheat_Sheet">OWASP: Web Service Security Cheat Sheet</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20: Improper Input Validation</a>
 </p>
@@ -757,7 +745,7 @@ sc.init(kmf.getKeyManagers(), tmf.getTrustManagers(),null);
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/REST_Assessment_Cheat_Sheet">OWASP: REST Assessment Cheat Sheet</a><br/>
 <a href="https://www.owasp.org/index.php/REST_Security_Cheat_Sheet">OWASP: REST Security Cheat Sheet</a><br/>
 <a href="https://www.owasp.org/index.php/Web_Service_Security_Cheat_Sheet">OWASP: Web Service Security Cheat Sheet</a><br/>
@@ -805,7 +793,7 @@ inputs in the backing Java class. The mapping is either done with field name:</p
 mapped in this way are properly validated before they are used.</p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://tapestry.apache.org/">Apache Tapestry Home Page</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20: Improper Input Validation</a>
 </p>
@@ -830,7 +818,7 @@ The current page is mapped to the view <code>/package/WebPageName.html</code>.</
 mapped in this way are properly validated before they are used.</p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://wicket.apache.org/">Apache Wicket Home Page</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20: Improper Input Validation</a>
 </p>
@@ -899,7 +887,7 @@ mapped in this way are properly validated before they are used.</p>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 [1] <a href="https://www.win.tue.nl/hashclash/On%20Collisions%20for%20MD5%20-%20M.M.J.%20Stevens.pdf">On Collisions for MD5</a>: Master Thesis by M.M.J. Stevens<br/>
 [2] <a href="https://homepages.cwi.nl/~stevens/papers/stJOC%20-%20Chosen-Prefix%20Collisions%20for%20MD5%20and%20Applications.pdf">Chosen-prefix collisions for MD5 and applications</a>: Paper written by Marc Stevens<br/>
 <a href="https://en.wikipedia.org/wiki/MD5">Wikipedia: MD5</a><br/>
@@ -968,7 +956,7 @@ uses. <b>PBKDF2</b> should be used to hash password for example.</p>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://community.qualys.com/blogs/securitylabs/2014/09/09/sha1-deprecation-what-you-need-to-know">Qualys blog: SHA1 Deprecation: What You Need to Know</a><br/>
 <a href="https://googleonlinesecurity.blogspot.ca/2014/09/gradually-sunsetting-sha-1.html">Google Online Security Blog: Gradually sunsetting SHA-1</a><br/>
 <a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf">NIST: Transitioning the Use of Cryptographic Algorithms and Key Lengths</a><br/>
@@ -1025,7 +1013,7 @@ Upgrade your implementation to use one of the recommended constructs and configu
 <br/>
 
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://blogs.oracle.com/java-platform-group/entry/diagnosing_tls_ssl_and_https">Diagnosing TLS, SSL, and HTTPS</a>
 </p>
 ]]>
@@ -1052,7 +1040,7 @@ Upgrade your implementation to the following, and configure <code>https.protocol
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://blogs.oracle.com/java-platform-group/entry/diagnosing_tls_ssl_and_https">Diagnosing TLS, SSL, and HTTPS</a>
 </p>
 ]]>
@@ -1103,7 +1091,7 @@ sha256Digest.update(password.getBytes());</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://csrc.nist.gov/projects/hash-functions">NIST Approved Hash Functions</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/327.html">CWE-327: Use of a Broken or Risky Cryptographic Algorithm</a>
 </p>
@@ -1134,7 +1122,7 @@ own file names and use those. Otherwise, the provided filename should be properl
 contains no unauthorized path characters (e.g., / \), and refers to an authorized file.</p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://blogs.securiteam.com/index.php/archives/1268">Securiteam: File upload security recommendations</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/22.html">CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')</a><br/>
 <a href="http://projects.webappsec.org/w/page/13246952/Path%20Traversal">WASC-33: Path Traversal</a><br/>
@@ -1174,7 +1162,7 @@ regex meant, this new regex can be evaluated quickly, and is not subject to ReDO
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://sebastiankuebeck.wordpress.com/2011/03/01/detecting-and-preventing-redos-vulnerabilities/">Sebastian Kubeck's Weblog: Detecting and Preventing ReDoS Vulnerabilities</a><br/>
 <sup>[1]</sup> <a href="https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS">OWASP: Regular expression Denial of Service</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/400.html">CWE-400: Uncontrolled Resource Consumption ('Resource Exhaustion')</a>
@@ -1265,7 +1253,7 @@ The following snippets show two available solutions. You can set one property or
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <!--XXE_GENERIC_START-->
 <a href="https://cwe.mitre.org/data/definitions/611.html">CWE-611: Improper Restriction of XML External Entity Reference ('XXE')</a><br/>
 <a href="https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61702260">CERT: IDS10-J. Prevent XML external entity attacks</a><br/>
@@ -1368,7 +1356,7 @@ xPathExpr.evaluate( builder.parse(inputStream) );</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <!--XXE_GENERIC_START-->
 <a href="https://cwe.mitre.org/data/definitions/611.html">CWE-611: Improper Restriction of XML External Entity Reference ('XXE')</a><br/>
 <a href="https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61702260">CERT: IDS10-J. Prevent XML external entity attacks</a><br/>
@@ -1459,7 +1447,7 @@ parser.parse(inputStream, customHandler);</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <!--XXE_GENERIC_START-->
 <a href="https://cwe.mitre.org/data/definitions/611.html">CWE-611: Improper Restriction of XML External Entity Reference ('XXE')</a><br/>
 <a href="https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61702260">CERT: IDS10-J. Prevent XML external entity attacks</a><br/>
@@ -1550,7 +1538,7 @@ reader.parse(new InputSource(inputStream));</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <!--XXE_GENERIC_START-->
 <a href="https://cwe.mitre.org/data/definitions/611.html">CWE-611: Improper Restriction of XML External Entity Reference ('XXE')</a><br/>
 <a href="https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61702260">CERT: IDS10-J. Prevent XML external entity attacks</a><br/>
@@ -1641,7 +1629,7 @@ Document doc = db.parse(input);</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <!--XXE_GENERIC_START-->
 <a href="https://cwe.mitre.org/data/definitions/611.html">CWE-611: Improper Restriction of XML External Entity Reference ('XXE')</a><br/>
 <a href="https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61702260">CERT: IDS10-J. Prevent XML external entity attacks</a><br/>
@@ -1741,7 +1729,7 @@ transformer.transform(input, result);</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <!--XXE_GENERIC_START-->
 <a href="https://cwe.mitre.org/data/definitions/611.html">CWE-611: Improper Restriction of XML External Entity Reference ('XXE')</a><br/>
 <a href="https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61702260">CERT: IDS10-J. Prevent XML external entity attacks</a><br/>
@@ -1820,7 +1808,7 @@ transformer.transform(input, result);</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <!--XXE_GENERIC_START-->
 <a href="https://cwe.mitre.org/data/definitions/611.html">CWE-611: Improper Restriction of XML External Entity Reference ('XXE')</a><br/>
 <a href="https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61702260">CERT: IDS10-J. Prevent XML external entity attacks</a><br/>
@@ -1852,7 +1840,7 @@ could be exposed. This could allow an attacker to access unauthorized data or ma
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246963/SQL%20Injection">WASC-39: XPath Injection</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A1-Injection">OWASP: Top 10 2013-A1-Injection</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/643.html">CWE-643: Improper Neutralization of Data within XPath Expressions ('XPath Injection')</a><br/>
@@ -1945,7 +1933,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 }</pre>
 </p>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html#when-to-use-csrf-protection">Spring Security Official Documentation: When to use CSRF protection</a><br/>
 <a href="https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29">OWASP: Cross-Site Request Forgery</a><br/>
 <a href="https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29_Prevention_Cheat_Sheet">OWASP: CSRF Prevention Cheat Sheet</a><br/>
@@ -2034,7 +2022,7 @@ public class SafeController {
 }</pre>
 </p>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html#csrf-use-proper-verbs">Spring Security Official Documentation: Use proper HTTP verbs (CSRF protection)</a><br/>
 <a href="https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29">OWASP: Cross-Site Request Forgery</a><br/>
 <a href="https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29_Prevention_Cheat_Sheet">OWASP: CSRF Prevention Cheat Sheet</a><br/>
@@ -2068,7 +2056,7 @@ The method identified is susceptible to injection. The input should be validated
     Refer to the online wiki for detailed instructions on <a href="https://github.com/find-sec-bugs/find-sec-bugs/wiki/Custom-signatures">how to configure custom signatures</a>.
 </p>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246963/SQL%20Injection">WASC-19: SQL Injection</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A1-Injection">OWASP: Top 10 2013-A1-Injection</a><br/>
 <a href="https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet">OWASP: SQL Injection Prevention Cheat Sheet</a><br/>
@@ -2565,7 +2553,7 @@ Therefore, the primary defense against LDAP injection is strong input validation
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246947/LDAP%20Injection">WASC-29: LDAP Injection</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A1-Injection">OWASP: Top 10 2013-A1-Injection</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/90.html">CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection')</a><br/>
@@ -2628,7 +2616,7 @@ public void runCustomTrigger(String script) {
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://github.com/cloudbees/rhino-sandbox">Cloudbees Rhino Sandbox</a>: Utility to create sandbox with Rhino (block access to all classes)<br/>
 <a href="https://codeutopia.net/blog/2009/01/02/sandboxing-rhino-in-java/">CodeUtopia.net: Sandboxing Rhino in Java</a><br/>
 <a href="https://blog.h3xstream.com/2014/11/remote-code-execution-by-design.html">Remote Code Execution .. by design</a>: Example of malicious payload. The samples given could be used to test sandboxing rules.<br/>
@@ -2670,7 +2658,7 @@ public void parseExpressionInterface(Person personObj,String property) {
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://cwe.mitre.org/data/definitions/94.html">CWE-94: Improper Control of Generation of Code ('Code Injection')</a><br/>
     <a href="https://cwe.mitre.org/data/definitions/95.html">CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')</a><br/>
     <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/expressions.html">Spring Expression Language (SpEL) - Official Documentation</a><br/>
@@ -2707,7 +2695,7 @@ public void parseExpressionInterface(Person personObj,String property) {
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://blog.mindedsecurity.com/2015/11/reliable-os-shell-with-el-expression.html">Minded Security: Abusing EL for executing OS commands</a><br/>
     <a href="https://docs.oracle.com/javaee/6/tutorial/doc/gjddd.html">The Java EE 6 Tutorial: Expression Language</a><br/>
     <a href="https://cwe.mitre.org/data/definitions/94.html">CWE-94: Improper Control of Generation of Code ('Code Injection')</a><br/>
@@ -2751,7 +2739,7 @@ public void parseExpressionInterface(Person personObj,String property) {
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://issues.jboss.org/browse/JBSEAM-5130">JBSEAM-5130: Issue documenting the risk</a><br/>
     <a href="https://docs.jboss.org/seam/2.3.1.Final/reference/html_single/#d0e4185">JBoss Seam: Logging (Official documentation)</a><br/>
     <a href="https://docs.oracle.com/javaee/6/tutorial/doc/gjddd.html">The Java EE 6 Tutorial: Expression Language</a><br/>
@@ -2794,7 +2782,7 @@ In general, method evaluating OGNL expression should not receive user input. It 
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://community.saas.hpe.com/t5/Security-Research/Struts-2-OGNL-Expression-Injections/ba-p/288881">HP Enterprise: Struts 2 OGNL Expression Injections by Alvaro Mu&Atilde;&plusmn;oz</a><br/>
     <a href="https://blog.gdssecurity.com/labs/2017/3/27/an-analysis-of-cve-2017-5638.html">Gotham Digital Science: An Analysis Of CVE-2017-5638</a><br/>
     <a href="https://struts.apache.org/docs/s2-016.html">Apache Struts2: Vulnerability S2-016</a><br/>
@@ -2835,7 +2823,7 @@ response.addCookie(cookie);</pre>
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://www.owasp.org/index.php/HTTP_Response_Splitting">OWASP: HTTP Response Splitting</a><br/>
     <a href="https://cwe.mitre.org/data/definitions/113.html">CWE-113: Improper Neutralization of CRLF Sequences in HTTP Headers ('HTTP Response Splitting')</a>
     <a href="https://cwe.mitre.org/data/definitions/93.html">CWE-93: Improper Neutralization of CRLF Sequences ('CRLF Injection')</a><br/>
@@ -2906,7 +2894,7 @@ The project <a href="https://github.com/javabeanz/owasp-security-logging">OWASP 
 
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://cwe.mitre.org/data/definitions/117.html">CWE-117: Improper Output Neutralization for Logs</a><br/>
     <a href="https://cwe.mitre.org/data/definitions/93.html">CWE-93: Improper Neutralization of CRLF Sequences ('CRLF Injection')</a><br/>
     <a href="https://logback.qos.ch/manual/layouts.html#replace">CWE-93: Improper Neutralization of CRLF Sequences ('CRLF Injection')</a><br/>
@@ -2942,7 +2930,7 @@ The project <a href="https://github.com/javabeanz/owasp-security-logging">OWASP 
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://cwe.mitre.org/data/definitions/15.html">CWE-15: External Control of System or Configuration Setting</a><br/>
 </p>
 ]]>
@@ -2985,7 +2973,7 @@ In this situation, the method <code>Integer.toHexString()</code> should be repla
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/704.html">CWE-704: Incorrect Type Conversion or Cast</a>
 </p>
 ]]>
@@ -3007,7 +2995,7 @@ In this situation, the method <code>Integer.toHexString()</code> should be repla
 <p>Those ciphers alone do not provide integrity or secure authentication. The use of asymmetric encryption is preferred.</p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246945/Insufficient%20Transport%20Layer%20Protection">WASC-04: Insufficient Transport Layer Protection</a><br/>
 <a href="https://docs.hazelcast.org/docs/3.5/manual/html/encryption.html">Hazelcast Documentation: Encryption</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/326.html">CWE-326: Inadequate Encryption Strength</a>
@@ -3044,7 +3032,7 @@ byte[] cipherText = c.doFinal(plainText);</pre>
 </p>
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/327.html">CWE-327: Use of a Broken or Risky Cryptographic Algorithm</a>
 </p>
 ]]>
@@ -3081,7 +3069,7 @@ to do this correctly.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2010-A9">OWASP: Top 10 2010-A9-Insufficient Transport Layer Protection</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure">OWASP: Top 10 2013-A6-Sensitive Data Exposure</a><br/>
 <a href="https://www.owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet">OWASP: Transport Layer Protection Cheat Sheet</a><br/>
@@ -3120,7 +3108,7 @@ to do this correctly.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2010-A9">OWASP: Top 10 2010-A9-Insufficient Transport Layer Protection</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure">OWASP: Top 10 2013-A6-Sensitive Data Exposure</a><br/>
 <a href="https://www.owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet">OWASP: Transport Layer Protection Cheat Sheet</a><br/>
@@ -3159,7 +3147,7 @@ byte[] cipherText = c.doFinal(plainText);</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.nist.gov/news-events/news/2005/06/nist-withdraws-outdated-data-encryption-standard">NIST Withdraws Outdated Data Encryption Standard</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/326.html">CWE-326: Inadequate Encryption Strength</a>
 </p>
@@ -3195,7 +3183,7 @@ byte[] cipherText = c.doFinal(plainText);</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.nist.gov/news-events/news/2005/06/nist-withdraws-outdated-data-encryption-standard">NIST Withdraws Outdated Data Encryption Standard</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/326.html">CWE-326: Inadequate Encryption Strength</a>
 </p>
@@ -3227,7 +3215,7 @@ The code should be replaced with:<br/>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/780.html">CWE-780: Use of RSA Algorithm without OAEP</a><br/>
 <a href="https://rdist.root.org/2009/10/06/why-rsa-encryption-padding-is-critical/">Root Labs: Why RSA encryption padding is critical</a>
 </p>
@@ -3279,7 +3267,7 @@ props.put(Context.SECURITY_CREDENTIALS, "p@ssw0rd");</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/259.html">CWE-259: Use of Hard-coded Password</a>
 </p>
 ]]>
@@ -3308,7 +3296,7 @@ return aesCipher.doFinal(secretData);</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/321.html">CWE-321: Use of Hard-coded Cryptographic Key</a><br/>
 </p>
 ]]>
@@ -3352,7 +3340,7 @@ if(MessageDigest.isEqual(userInput.getBytes(),actualHash.getBytes())) {
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/203.html">CWE-203: Information Exposure Through DiscrepancyKey</a><br/>
 </p>
 ]]>
@@ -3391,7 +3379,7 @@ public class RegistrationForm extends ValidatorForm {
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20: Improper Input Validation</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/106.html">CWE-106: Struts: Plug-in Framework not in Use</a>
 </p>
@@ -3437,7 +3425,7 @@ the XSS protection rules defined in the OWASP XSS Prevention Cheat Sheet.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting">WASC-8: Cross Site Scripting</a><br/>
 <a href="https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet">OWASP: XSS Prevention Cheat Sheet</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_%28XSS%29">OWASP: Top 10 2013-A3: Cross-Site Scripting (XSS)</a><br/>
@@ -3477,7 +3465,7 @@ keyGen.init(128);</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://en.wikipedia.org/wiki/Blowfish_(cipher)">Blowfish (cipher)</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/326.html">CWE-326: Inadequate Encryption Strength</a>
 </p>
@@ -3521,7 +3509,7 @@ keyGen.initialize(2048);
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://csrc.nist.gov/projects/key-management">NIST: Latest publication on key management</a><br/>
 <a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf">NIST: Recommendation for Transitioning the Use of Cryptographic Algorithms and Key Lengths p.7</a><br/>
 <a href="https://en.wikipedia.org/wiki/Key_size#Asymmetric%5Falgorithm%5Fkey%5Flengths">Wikipedia: Asymmetric algorithm key lengths</a><br/>
@@ -3584,7 +3572,7 @@ keyGen.initialize(2048);
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246981/URL%20Redirector%20Abuse">WASC-38: URL Redirector Abuse</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A10-Unvalidated_Redirects_and_Forwards">OWASP: Top 10 2013-A10: Unvalidated Redirects and Forwards</a><br/>
 <a href="https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet">OWASP: Unvalidated Redirects and Forwards Cheat Sheet</a><br/>
@@ -3633,7 +3621,7 @@ keyGen.initialize(2048);
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246981/URL%20Redirector%20Abuse">WASC-38: URL Redirector Abuse</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A10-Unvalidated_Redirects_and_Forwards">OWASP: Top 10 2013-A10: Unvalidated Redirects and Forwards</a><br/>
 <a href="https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet">OWASP: Unvalidated Redirects and Forwards Cheat Sheet</a><br/>
@@ -3683,7 +3671,7 @@ public String redirect(@RequestParam("url") String url) {
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246981/URL%20Redirector%20Abuse">WASC-38: URL Redirector Abuse</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A10-Unvalidated_Redirects_and_Forwards">OWASP: Top 10 2013-A10: Unvalidated Redirects and Forwards</a><br/>
 <a href="https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet">OWASP: Unvalidated Redirects and Forwards Cheat Sheet</a><br/>
@@ -3763,7 +3751,7 @@ class UserController {
 </p>
 
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/Top_10-2017_A3-Sensitive_Data_Exposure">OWASP Top 10-2017 A3: Sensitive Data Exposure</a><br/>
 <a href="https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html#spring-mvc">OWASP Cheat Sheet: Mass Assignment</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/212.html">CWE-212: Improper Cross-boundary Removal of Sensitive Data</a><br/>
@@ -3860,7 +3848,7 @@ class UserController {
 </p>
 
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cheatsheetseries.owasp.org/cheatsheets/Mass_Assignment_Cheat_Sheet.html#spring-mvc">OWASP Cheat Sheet: Mass Assignment</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/915.html">CWE-915: Improperly Controlled Modification of Dynamically-Determined Object Attributes</a><br/>
 </p>
@@ -3894,7 +3882,7 @@ attacker gets the ability to execute any code.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://resources.infosecinstitute.com/file-inclusion-attacks/">InfosecInstitute: File Inclusion Attacks</a><br/>
 <a href="http://projects.webappsec.org/w/page/13246955/Remote%20File%20Inclusion">WASC-05: Remote File Inclusion</a><br/>
 </p>
@@ -3932,7 +3920,7 @@ attacker gets the ability to execute any code.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
     <a href="https://cwe.mitre.org/data/definitions/94.html">CWE-94: Improper Control of Generation of Code ('Code Injection')</a><br/>
     <a href="https://cwe.mitre.org/data/definitions/95.html">CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')</a><br/>
 </p>
@@ -3967,7 +3955,7 @@ attacker gets the ability to execute any code.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting">WASC-8: Cross Site Scripting</a><br/>
 <a href="https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet">OWASP: XSS Prevention Cheat Sheet</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_%28XSS%29">OWASP: Top 10 2013-A3: Cross-Site Scripting (XSS)</a><br/>
@@ -4015,7 +4003,7 @@ which explains these defenses in significant detail.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting">WASC-8: Cross Site Scripting</a><br/>
 <a href="https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet">OWASP: XSS Prevention Cheat Sheet</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_%28XSS%29">OWASP: Top 10 2013-A3: Cross-Site Scripting (XSS)</a><br/>
@@ -4065,7 +4053,7 @@ which explains these defenses in significant detail.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting">WASC-8: Cross Site Scripting</a><br/>
 <a href="https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet">OWASP: XSS Prevention Cheat Sheet</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_%28XSS%29">OWASP: Top 10 2013-A3: Cross-Site Scripting (XSS)</a><br/>
@@ -4124,7 +4112,7 @@ The solution is to avoid using XMLDecoder to parse content from an untrusted sou
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://blog.diniscruz.com/2013/08/using-xmldecoder-to-execute-server-side.html">Dinis Cruz Blog: Using XMLDecoder to execute server-side Java Code on a Restlet application</a><br/>
 <a href="https://securityblog.redhat.com/2014/01/23/java-deserialization-flaws-part-2-xml-deserialization/">RedHat blog : Java deserialization flaws: Part 2, XML deserialization</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/20.html">CWE-20: Improper Input Validation</a>
@@ -4171,7 +4159,7 @@ public void encrypt(String message) throws Exception {
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://en.wikipedia.org/wiki/Initialization_vector">Wikipedia: Initialization vector</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/329.html">CWE-329: Not Using a Random IV with CBC Mode</a><br/>
 <a href="https://defuse.ca/cbcmodeiv.htm">Encryption - CBC Mode IV: Secret or Not?</a>
@@ -4214,7 +4202,7 @@ byte[] cipherText = c.doFinal(plainText);</pre>
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://en.wikipedia.org/wiki/Authenticated_encryption">Wikipedia: Authenticated encryption</a><br/>
 <a href="https://csrc.nist.gov/projects/block-cipher-techniques/bcm/modes-develoment#01">NIST: Authenticated Encryption Modes</a><br/>
 <a href="https://en.wikipedia.org/wiki/Block_cipher_modes_of_operation#Electronic_codebook_.28ECB.29">Wikipedia: Block cipher modes of operation</a><br/>
@@ -4251,7 +4239,7 @@ byte[] cipherText = c.doFinal(plainText);</pre>
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="http://www.infobytesec.com/down/paddingoracle_openjam.pdf">Padding Oracles for the masses (by Matias Soler)</a><br/>
     <a href="https://en.wikipedia.org/wiki/Authenticated_encryption">Wikipedia: Authenticated encryption</a><br/>
     <a href="https://csrc.nist.gov/projects/block-cipher-techniques/bcm/modes-develoment#01">NIST: Authenticated Encryption Modes</a><br/>
@@ -4310,7 +4298,7 @@ In the example solution above, the GCM mode introduces an HMAC into the resultin
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://en.wikipedia.org/wiki/Authenticated_encryption">Wikipedia: Authenticated encryption</a><br/>
     <a href="https://csrc.nist.gov/projects/block-cipher-techniques/bcm/modes-develoment#01">NIST: Authenticated Encryption Modes</a><br/>
     <a href="https://moxie.org/blog/the-cryptographic-doom-principle/">Moxie Marlinspike's blog: The Cryptographic Doom Principle</a><br/>
@@ -4396,7 +4384,7 @@ Encryptor.cipher_modes.additional_allowed=</pre>
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://github.com/peval/owasp-esapi-java/blob/master/documentation/ESAPI-security-bulletin1.pdf">ESAPI Security bulletin 1 (CVE-2013-5679)</a><br/>
     <a href="https://nvd.nist.gov/vuln/detail/CVE-2013-5679">Vulnerability Summary for CVE-2013-5679</a><br/>
     <a href="https://www.synacktiv.com/ressources/synacktiv_owasp_esapi_hmac_bypass.pdf">Synactiv: Bypassing HMAC validation in OWASP ESAPI symmetric encryption</a><br/>
@@ -4442,7 +4430,7 @@ fos.write(string.getBytes());
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="http://developer.android.com/training/articles/security-tips.html#ExternalStorage">Android Official Doc: Security Tips</a><br/>
     <a href="https://www.securecoding.cert.org/confluence/display/java/DRD00-J.+Do+not+store+sensitive+information+on+external+storage+%28SD+card%29+unless+encrypted+first">CERT: DRD00-J: Do not store sensitive information on external storage [...]</a><br/>
     <a href="https://developer.android.com/guide/topics/data/data-storage.html#filesExternal">Android Official Doc: Using the External Storage</a><br/>
@@ -4526,7 +4514,7 @@ sendBroadcast(v1);
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://www.securecoding.cert.org/confluence/display/java/DRD03-J.+Do+not+broadcast+sensitive+information+using+an+implicit+intent">CERT: DRD03-J. Do not broadcast sensitive information using an implicit intent</a><br/>
     <a href="https://developer.android.com/reference/android/content/BroadcastReceiver.html#Security">Android Official Doc: BroadcastReceiver (Security)</a><br/>
     <a href="https://developer.android.com/guide/topics/manifest/receiver-element.html">Android Official Doc: Receiver configuration (see <code>android:permission</code>)</a><br/>
@@ -4575,7 +4563,7 @@ create on external storage. See references below for implementation guidelines.
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://www.securecoding.cert.org/confluence/display/java/DRD11-J.+Ensure+that+sensitive+data+is+kept+secure">CERT: DRD11-J. Ensure that sensitive data is kept secure</a><br/>
     <a href="https://developer.android.com/training/articles/security-tips.html#InternalStorage">Android Official Doc: Security Tips</a><br/>
     <a href="https://developer.android.com/reference/android/content/Context.html#MODE_PRIVATE">Android Official Doc: Context.MODE_PRIVATE</a><br/>
@@ -4630,7 +4618,7 @@ webView.setWebChromeClient(new WebChromeClient() {
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://www.securecoding.cert.org/confluence/display/java/DRD15-J.+Consider+privacy+concerns+when+using+Geolocation+API">CERT: DRD15-J. Consider privacy concerns when using Geolocation API</a><br/>
     <a href="https://en.wikipedia.org/wiki/W3C_Geolocation_API">Wikipedia: W3C Geolocation API</a><br/>
     <a href="https://w3c.github.io/geolocation-api/">W3C: Geolocation Specification</a><br/>
@@ -4672,7 +4660,7 @@ function updateDescription(newDescription) {
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="http://www.technotalkative.com/issue-using-setjavascriptenabled-can-introduce-xss-vulnerabilities-application-review-carefully/">Issue: Using <code>setJavaScriptEnabled</code> can introduce XSS vulnerabilities</a><br/>
     <a href="https://developer.android.com/guide/webapps/webview.html#UsingJavaScript">Android Official Doc: WebView</a><br/>
     <a href="http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting">WASC-8: Cross Site Scripting</a><br/>
@@ -4726,7 +4714,7 @@ class FileWriteUtil {
 </p>
 <br/>
 <p>
-    <b>References</b><br/>
+    <b>参考</b><br/>
     <a href="https://developer.android.com/reference/android/webkit/WebView.html#addJavascriptInterface%28java.lang.Object,%20java.lang.String%29">Android Official Doc: <code>WebView.addJavascriptInterface()</code></a><br/>
     <a href="https://cwe.mitre.org/data/definitions/749.html">CWE-749: Exposed Dangerous Method or Function</a>
 </p>
@@ -4784,7 +4772,7 @@ cookie.setHttpOnly(true);
 </p>
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/614.html">CWE-614: Sensitive Cookie in HTTPS Session Without 'Secure' Attribute</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/315.html">CWE-315: Cleartext Storage of Sensitive Information in a Cookie</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/311.html">CWE-311: Missing Encryption of Sensitive Data</a><br/>
@@ -4842,7 +4830,7 @@ cookie.setHttpOnly(true); //HttpOnly flag
 </p>
 <br/>
 <p>
-<b>Reference</b><br/>
+<b>参考</b><br/>
 <a href="https://blog.codinghorror.com/protecting-your-cookies-httponly/">Coding Horror blog: Protecting Your Cookies: HttpOnly</a><br/>
 <a href="https://www.owasp.org/index.php/HttpOnly">OWASP: HttpOnly</a><br/>
 <a href="https://www.rapid7.com/db/vulnerabilities/http-cookie-http-only-flag">Rapid7: Missing HttpOnly Flag From Cookie</a>
@@ -4894,7 +4882,7 @@ Avoid deserializing object provided by remote users.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/502.html">CWE-502: Deserialization of Untrusted Data</a><br/>
 <a href="https://www.owasp.org/index.php/Deserialization_of_untrusted_data">Deserialization of untrusted data</a><br/>
 <a href="https://www.oracle.com/technetwork/java/seccodeguide-139067.html#8">Serialization and Deserialization </a><br/>
@@ -4957,7 +4945,7 @@ public class Example {
 </p>
 
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://github.com/FasterXML/jackson-databind/issues/1599">Jackson Deserializer security vulnerability</a><br>
 <a href="https://github.com/mbechler/marshalsec">Java Unmarshaller Security - Turning your data into code execution</a><br>
 </p>
@@ -4986,7 +4974,7 @@ This detector is intended to be used mostly by researcher. The real issue is usi
 Removing gadget is a hardening practice to reduce the risk of being exploited.
 </p>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/502.html">CWE-502: Deserialization of Untrusted Data</a><br/>
 <a href="https://www.owasp.org/index.php/Deserialization_of_untrusted_data">Deserialization of untrusted data</a><br/>
 <a href="https://www.oracle.com/technetwork/java/seccodeguide-139067.html#8">Serialization and Deserialization </a><br/>
@@ -5050,7 +5038,7 @@ safe location rather than using direct user input.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 [1] <a href="https://cwe.mitre.org/data/definitions/501.html">CWE-501: Trust Boundary Violation</a><br/>
 <a href="https://www.owasp.org/index.php/Trust_Boundary_Violation">OWASP : Trust Boundary Violation</a>
 </p>
@@ -5086,7 +5074,7 @@ The solution would be to make sure the style sheet is loaded from a safe sources
 Path traversal <sup>[3][4]</sup> are not possible.
 </p>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 [1] <a href="https://en.wikipedia.org/wiki/XSLT">Wikipedia: XSLT (Extensible Stylesheet Language Transformations)</a><br/>
 <a href="https://prezi.com/y_fuybfudgnd/offensive-xslt/">Offensive XSLT</a> by Nicolas Grégoire<br/>
 [2] <a href="https://www.agarri.fr/blog/archives/2012/07/02/from_xslt_code_execution_to_meterpreter_shells/index.html">From XSLT code execution to Meterpreter shells</a> by Nicolas Grégoire<br/>
@@ -5144,7 +5132,7 @@ Alternatively, make sure the style sheet is loaded from a safe sources and make 
 Path traversal <sup>[3][4]</sup> are not possible.
 </p>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 [1] <a href="https://en.wikipedia.org/wiki/XSLT">Wikipedia: XSLT (Extensible Stylesheet Language Transformations)</a><br/>
 <a href="https://prezi.com/y_fuybfudgnd/offensive-xslt/">Offensive XSLT</a> by Nicolas Grégoire<br/>
 [2] <a href="https://www.agarri.fr/blog/archives/2012/07/02/from_xslt_code_execution_to_meterpreter_shells/index.html">From XSLT code execution to Meterpreter shells</a> by Nicolas Grégoire<br/>
@@ -5189,7 +5177,7 @@ Path traversal <sup>[3][4]</sup> are not possible.
     Application configuration elements should not be sent in the response content and users should not be allowed to control which
     configuration elements will be used by the code.
 </p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure">OWASP: Top 10 2013-A6-Sensitive Data Exposure</a><br/>
 [1] <a href="https://www.owasp.org/index.php/Top_10_2007-Information_Leakage_and_Improper_Error_Handling">OWASP: Top 10 2007-Information Leakage and Improper Error Handling</a><br/>
 [2] <a href="http://projects.webappsec.org/w/page/13246936/Information%20Leakage">WASC-13: Information Leakage</a><br/>
@@ -5233,7 +5221,7 @@ Path traversal <sup>[3][4]</sup> are not possible.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/918.html">CWE-918: Server-Side Request Forgery (SSRF)</a><br/>
 <a href="https://www.bishopfox.com/blog/2015/04/vulnerable-by-design-understanding-server-side-request-forgery/">Understanding Server-Side Request Forgery</a><br/>
 </p>
@@ -5277,7 +5265,7 @@ new URL(String url).getContent()
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/918.html">CWE-918: Server-Side Request Forgery (SSRF)</a><br/>
 <a href="https://www.bishopfox.com/blog/2015/04/vulnerable-by-design-understanding-server-side-request-forgery/">Understanding Server-Side Request Forgery</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/73.html">CWE-73: External Control of File Name or Path</a><br/>
@@ -5318,7 +5306,7 @@ which explains these defenses in significant detail.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting">WASC-8: Cross Site Scripting</a><br/>
 <a href="https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet">OWASP: XSS Prevention Cheat Sheet</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_%28XSS%29">OWASP: Top 10 2013-A3: Cross-Site Scripting (XSS)</a><br/>
@@ -5361,7 +5349,7 @@ which explains these defenses in significant detail.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting">WASC-8: Cross Site Scripting</a><br/>
 <a href="https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet">OWASP: XSS Prevention Cheat Sheet</a><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_%28XSS%29">OWASP: Top 10 2013-A3: Cross-Site Scripting (XSS)</a><br/>
@@ -5401,7 +5389,7 @@ prefer logic-less template engines such as Handlebars or Moustache (See referenc
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://blog.portswigger.net/2015/08/server-side-template-injection.html">PortSwigger: Server-Side Template Injection </a><br/>
 <a href="https://jknack.github.io/handlebars.java/">Handlebars.java</a><br/>
 </p>
@@ -5438,7 +5426,7 @@ prefer logic-less template engines such as Handlebars or Moustache (See referenc
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://portswigger.net/research/server-side-template-injection">PortSwigger: Server-Side Template Injection</a><br/>
 <a href="https://jknack.github.io/handlebars.java/">Handlebars.java</a><br/>
 </p>
@@ -5475,7 +5463,7 @@ prefer logic-less template engines such as Handlebars or Moustache (See referenc
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://research.securitum.com/server-side-template-injection-on-the-example-of-pebble/">Server Side Template Injection – on the example of Pebble</a> by Michał Bentkowski<br/>
 <a href="https://portswigger.net/research/server-side-template-injection">PortSwigger: Server-Side Template Injection</a><br/>
 <a href="https://jknack.github.io/handlebars.java/">Handlebars.java</a><br/>
@@ -5511,7 +5499,7 @@ Avoid using * as the value of the Access-Control-Allow-Origin header, which indi
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.w3.org/TR/cors/">W3C Cross-Origin Resource Sharing</a><br/>
 <a href="https://enable-cors.org/">Enable Cross-Origin Resource Sharing</a><br/>
 </p>]]>
@@ -5553,7 +5541,7 @@ Consider other modes of authentication to LDAP and ensure proper access control 
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://docs.oracle.com/javase/tutorial/jndi/ldap/auth_mechs.html">Ldap Authentication Mechanisms</a><br/>
 </p>
             ]]>
@@ -5605,7 +5593,7 @@ ctx.search(query, filter,
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE-wp.pdf">Black Hat USA 2016: A Journey From JNDI/LDAP Manipulation to Remote Code Execution Dream Land</a>
 (<a href="https://www.blackhat.com/docs/us-16/materials/us-16-Munoz-A-Journey-From-JNDI-LDAP-Manipulation-To-RCE.pdf">slides</a> &amp; <a href="https://www.youtube.com/watch?v=Y8a5nB-vy78">video</a>) by Alvaro Mu&#xF1;oz and Oleksandr Mirosh<br/>
 <a href="https://community.hpe.com/t5/Security-Research/Introducing-JNDI-Injection-and-LDAP-Entry-Poisoning/ba-p/6885118">HP Enterprise: Introducing JNDI Injection and LDAP Entry Poisoning</a> by Alvaro Mu&#xF1;oz<br/>
@@ -5649,7 +5637,7 @@ cookie.setMaxAge(60*60*24*365);
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://tomcat.apache.org/tomcat-5.5-doc/servletapi/javax/servlet/http/Cookie.html#setMaxAge%28int%29">Class Cookie <code>setMaxAge</code> documentation</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/539.html">CWE-539: Information Exposure Through Persistent Cookies</a><br/>
 </p>
@@ -5692,7 +5680,7 @@ Avoid using those methods. If you are looking to encode a URL String or form par
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/Top_10_2010-A3-Broken_Authentication_and_Session_Management">OWASP Top 10 2010-A3-Broken Authentication and Session Management</a><br/>
 </p>
             ]]>
@@ -5739,7 +5727,7 @@ Please add the following check to verify the server certificate:
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/297.html">CWE-297: Improper Validation of Certificate with Host Mismatch</a><br/>
 </p>
             ]]>
@@ -5783,7 +5771,7 @@ This issue is analogical to SQL Injection. Sanitize user input before using it i
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/943.html">CWE-943: Improper Neutralization of Special Elements in Data Query Logic</a><br/>
 </p>
             ]]>
@@ -5825,7 +5813,7 @@ Avoid using user controlled values to populate Bean property names.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/15.html">CWE-15: External Control of System or Configuration Setting</a><br/>
 </p>
             ]]>
@@ -5863,7 +5851,7 @@ Avoid constructing server-side redirects using user controlled input.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/552.html">CWE-552: Files or Directories Accessible to External Parties</a><br/>
 </p>
             ]]>
@@ -5895,7 +5883,7 @@ Avoid constructing server-side redirects using user controlled input.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/552.html">CWE-552: Files or Directories Accessible to External Parties</a><br/>
 </p>
             ]]>
@@ -5926,7 +5914,7 @@ Avoid constructing server-side redirects using user controlled input.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/552.html">CWE-552: Files or Directories Accessible to External Parties</a><br/>
 </p>
             ]]>
@@ -5962,7 +5950,7 @@ Avoid using user controlled values in the format string argument.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/134.html">CWE-134: Use of Externally-Controlled Format String</a><br/>
 </p>
             ]]>
@@ -5998,7 +5986,7 @@ Sanitize user input before using it in HTTP parameters.
 </p>
 <br/>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://capec.mitre.org/data/definitions/460.html">CAPEC-460: HTTP Parameter Pollution (HPP)</a>
 </p>
             ]]>
@@ -6038,7 +6026,7 @@ The sensitive information may be valuable information on its own (such as a pass
 }</pre>
 </p>
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/209.html">CWE-209: Information Exposure Through an Error Message</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/211.html">CWE-211: Information Exposure Through Externally-Generated Error Message</a><br/>
 </p>
@@ -6081,7 +6069,7 @@ Transport.send(message);
 <p>Use <a href="https://commons.apache.org/proper/commons-email/userguide.html">Apache Common Email</a> or <a href="http://www.simplejavamail.org">Simple Java Mail</a>.</p>
 
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://www.owasp.org/index.php/Testing_for_IMAP/SMTP_Injection_(OTG-INPVAL-011)">OWASP SMTP Injection</a><br/>
 <a href="https://cwe.mitre.org/data/definitions/93.html">CWE-93: Improper Neutralization of CRLF Sequences ('CRLF Injection')</a><br/>
 <a href="https://commons.apache.org/proper/commons-email/userguide.html">Commons Email: User Guide</a><br/>
@@ -6119,7 +6107,7 @@ By default, extensions are disabled both on the client and the server.
 </p>
 
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 
 <a href="https://0ang3el.blogspot.com/2016/07/beware-of-ws-xmlrpc-library-in-your.html">0ang3el's Blog: Beware of WS-XMLRPC library in your Java App</a><br/>
 <a href="https://nvd.nist.gov/vuln/detail/CVE-2016-5003">CVE-2016-5003 vulnerability reference</a><br/>
@@ -6150,7 +6138,7 @@ add(new Label("someLabel").setEscapeModelStrings(false));
 </p>
 
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 
 <a href="https://ci.apache.org/projects/wicket/guide/6.x/guide/modelsforms.html">Wicket models and forms - Reference Documentation</a><br/>
 <a href="http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting">WASC-8: Cross Site Scripting</a><br/>
@@ -6215,7 +6203,7 @@ ParserPool parserPool1() {
 
 
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://duo.com/blog/duo-finds-saml-vulnerabilities-affecting-multiple-implementations">Duo Finds SAML Vulnerabilities Affecting Multiple Implementations</a><br/>
 <a href="https://spring.io/blog/2018/03/01/spring-security-saml-and-this-week-s-saml-vulnerability">Spring Security SAML and this week's SAML Vulnerability</a><br/>
 
@@ -6299,7 +6287,7 @@ perms.add(PosixFilePermission.GROUP_EXECUTE);
 </p>
 
 <p>
-<b>References</b><br/>
+<b>参考</b><br/>
 <a href="https://cwe.mitre.org/data/definitions/732.html">CWE-732: Incorrect Permission Assignment for Critical Resource</a><br/>
 <a href="https://payatu.com/guide-linux-privilege-escalation/">A guide to Linux Privilege Escalation</a><br/>
 <a href="https://en.wikipedia.org/wiki/File_system_permissions">File system permissions</a><br/>
